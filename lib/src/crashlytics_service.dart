@@ -39,7 +39,7 @@ class CrashlyticsService {
     required bool logwarnings,
   }) async {
     try {
-      if (level == Level.error || level == Level.wtf) {
+      if (level == Level.error || level == Level.wtf || level == Level.fatal) {
         await _crashlyticsService.recordError(
           lines.join('\n'),
           stacktrace,
@@ -56,6 +56,7 @@ class CrashlyticsService {
       }
       if (level == Level.info ||
           level == Level.verbose ||
+          level == Level.trace ||
           level == Level.debug) {
         await _crashlyticsService.log(lines.join('\n'));
       }
@@ -72,7 +73,7 @@ class CrashlyticsService {
     }
   }
 
-  // Be very careful when you excute this code it will crash the app
+  // Be very careful when you execute this code it will crash the app
   // So, be sure to remove it after usage
   void crashApp() {
     try {
