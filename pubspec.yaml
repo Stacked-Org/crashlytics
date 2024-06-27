@@ -16,6 +16,7 @@ dependencies:
   firebase_core: ^2.32.0
   firebase_crashlytics: ^3.5.7
   logger: ^2.3.0
+  stacked: ^3.4.3
 
 dev_dependencies:
   firebase_core_platform_interface: ^5.0.0

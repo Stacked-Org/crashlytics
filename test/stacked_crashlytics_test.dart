@@ -10,8 +10,10 @@ void main() {
       setupFirebaseAuthMocks();
       Firebase.initializeApp();
     });
+
     test('when called, it should crash the app', () async {
-      var service = await CrashlyticsService.getInstance();
+      final service = CrashlyticsService();
+      await service.init();
       service.crashApp();
     });
   });
