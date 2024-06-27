@@ -1,24 +1,19 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
+import 'package:stacked/stacked_annotations.dart';
 
-class CrashlyticsService {
-  static CrashlyticsService? _instance;
+class CrashlyticsService implements InitializableDependency {
+  late FirebaseCrashlytics _instance;
 
-  static Future<CrashlyticsService> getInstance() async {
-    _instance ??= CrashlyticsService._(FirebaseCrashlytics.instance);
-
-    return _instance!;
+  @override
+  Future<void> init() async {
+    _instance = FirebaseCrashlytics.instance;
   }
-
-  final FirebaseCrashlytics _crashlyticsService;
-  CrashlyticsService._(
-    this._crashlyticsService,
-  );
 
   void recordFlutterErrorToCrashlytics(FlutterErrorDetails details) {
     try {
-      _crashlyticsService.recordFlutterError(details);
+      _instance.recordFlutterError(details);
     } catch (e) {
       _catchOrThrow(e);
     }
@@ -26,7 +21,7 @@ class CrashlyticsService {
 
   Future setUserIdToCrashlytics({String? id}) async {
     try {
-      if (id != null) await _crashlyticsService.setUserIdentifier(id);
+      if (id != null) await _instance.setUserIdentifier(id);
     } catch (e) {
       _catchOrThrow(e);
     }
@@ -39,8 +34,8 @@ class CrashlyticsService {
     required bool logwarnings,
   }) async {
     try {
-      if (level == Level.error || level == Level.wtf || level == Level.fatal) {
-        await _crashlyticsService.recordError(
+      if (level == Level.error || level == Level.fatal) {
+        await _instance.recordError(
           lines.join('\n'),
           stacktrace,
           printDetails: true,
@@ -48,17 +43,14 @@ class CrashlyticsService {
         );
       }
       if (level == Level.warning && logwarnings) {
-        await _crashlyticsService.recordError(
+        await _instance.recordError(
           lines.join('\n'),
           stacktrace,
           printDetails: true,
         );
       }
-      if (level == Level.info ||
-          level == Level.verbose ||
-          level == Level.trace ||
-          level == Level.debug) {
-        await _crashlyticsService.log(lines.join('\n'));
+      if (level == Level.info || level == Level.trace || level == Level.debug) {
+        await _instance.log(lines.join('\n'));
       }
     } catch (exception) {
       _catchOrThrow(exception);
@@ -67,7 +59,7 @@ class CrashlyticsService {
 
   Future setCustomKeysToTrack(String key, dynamic value) async {
     try {
-      await _crashlyticsService.setCustomKey(key, value);
+      await _instance.setCustomKey(key, value);
     } catch (e) {
       _catchOrThrow(e);
     }
@@ -77,7 +69,7 @@ class CrashlyticsService {
   // So, be sure to remove it after usage
   void crashApp() {
     try {
-      _crashlyticsService.crash();
+      _instance.crash();
     } catch (e) {
       _catchOrThrow(e);
     }
@@ -99,16 +91,16 @@ class CrashlyticsOutput extends LogOutput {
   CrashlyticsOutput({this.logWarnings = false});
 
   @override
-  void output(OutputEvent event) {
+  Future<void> output(OutputEvent event) async {
     try {
-      CrashlyticsService.getInstance().then((instance) {
-        return instance.logToCrashlytics(
-          event.level,
-          event.lines,
-          StackTrace.current,
-          logwarnings: logWarnings,
-        );
-      });
+      final service = CrashlyticsService();
+      await service.init();
+      return service.logToCrashlytics(
+        event.level,
+        event.lines,
+        StackTrace.current,
+        logwarnings: logWarnings,
+      );
     } catch (e) {
       if (kDebugMode) {
         print('CRASHLYTICS FAILED: $e');
