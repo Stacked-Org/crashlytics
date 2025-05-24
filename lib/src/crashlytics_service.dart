@@ -56,6 +56,8 @@ class CrashlyticsService {
       }
       if (level == Level.info ||
           level == Level.verbose ||
+          level == Level.trace ||
+          level == Level.trace ||
           level == Level.debug) {
         await _crashlyticsService.log(lines.join('\n'));
       }
