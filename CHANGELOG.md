@@ -1,3 +1,8 @@
+## 0.2.1
+
+- Updates firebase_crashlytics: ^4.3.6
+- Updates firebase_core: ^3.13.1
+
 ## 0.2.0
 
 - Updates firebase_crashlytics: ^4.3.5
