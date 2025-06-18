@@ -101,7 +101,7 @@ class CrashlyticsOutput extends LogOutput {
       return service.logToCrashlytics(
         event.level,
         event.lines,
-        StackTrace.current,
+        event.origin.stackTrace ?? StackTrace.current,
         logwarnings: logWarnings,
       );
     } catch (e) {
