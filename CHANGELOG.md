@@ -1,3 +1,7 @@
+## 0.2.2
+
+fix: Ensures crashlytics output uses stacktrace from event and not current
+
 ## 0.2.1
 
 - Updates firebase_crashlytics: ^4.3.6
