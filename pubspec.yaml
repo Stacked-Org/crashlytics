@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^3.13.1
+  firebase_core: ^4.0.0
   firebase_crashlytics: ^4.3.6
   logger: ^2.5.0
   stacked: ^3.4.3
