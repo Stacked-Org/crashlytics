@@ -19,7 +19,7 @@ dependencies:
   stacked: ^3.4.3
 
 dev_dependencies:
-  firebase_core_platform_interface: ^5.4.0
+  firebase_core_platform_interface: ^6.0.0
 
 
   flutter_lints: ^5.0.0
